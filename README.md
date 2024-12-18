@@ -15,7 +15,7 @@ docker network create jenkins
 ## Run the Container
 
 ```bash
-docker run --name jenkins-blueocean --restart=on-failure --detach \
+docker run --name jenkins --restart=on-failure --detach \
   --network jenkins --env DOCKER_HOST=tcp://docker:2376 \
   --env DOCKER_CERT_PATH=/certs/client --env DOCKER_TLS_VERIFY=1 \
   --publish 8080:8080 --publish 50000:50000 \
@@ -28,7 +28,7 @@ docker run --name jenkins-blueocean --restart=on-failure --detach \
 ## Get the Password
 
 ```bash
-docker exec jenkins-blueocean cat /var/jenkins_home/secrets/initialAdminPassword
+docker exec jenkins /var/jenkins_home/secrets/initialAdminPassword
 
 ```
 
