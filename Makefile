@@ -20,23 +20,27 @@ MAKEFLAGS += --no-print-directory
 ##@ Jenkins Setup
 build: ## Build the Jenkins BlueOcean Docker image
 	@echo "🚀 Building Docker image: $(DOCKER_IMAGE)"
-	docker build $(DOCKER_BUILD_FLAGS) .
+	@docker build $(DOCKER_BUILD_FLAGS) .
 
 network: ## Create the Docker network 'jenkins'
 	@echo "🔧 Creating Docker network: $(DOCKER_NETWORK)"
-	docker network create $(DOCKER_NETWORK) || echo "Network $(DOCKER_NETWORK) already exists"
+	@docker network create $(DOCKER_NETWORK) || echo "Network $(DOCKER_NETWORK) already exists"
 
 run: ## Run the Jenkins BlueOcean container
 	@echo "🏃‍♂️ Starting Jenkins container: $(DOCKER_CONTAINER)"
-	docker run $(DOCKER_RUN_FLAGS)
+	@docker run $(DOCKER_RUN_FLAGS)
 
 get-password: ## Get the Jenkins initial admin password
 	@echo "🔑 Retrieving Jenkins initial admin password"
-	docker exec $(DOCKER_CONTAINER) cat /var/jenkins_home/secrets/initialAdminPassword
+	@docker exec $(DOCKER_CONTAINER) cat /var/jenkins_home/secrets/initialAdminPassword
 
 exec: ## Get into the container
 	@echo "Entering the jenkins container"
-	docker exec -it $(DOCKER_CONTAINER) sh
+	@docker exec -it $(DOCKER_CONTAINER) sh
+
+workspace: ## Get into the container and cd into the workspace dir
+	@echo "Entering workspace"
+	@docker exec -it $(DOCKER_CONTAINER) sh -c "cd /var/jenkins_home/workspace && sh"
 
 start: build network run ## Build, create network, and run Jenkins in one go
 	@echo "🎉 Jenkins is up and running"
@@ -44,8 +48,8 @@ start: build network run ## Build, create network, and run Jenkins in one go
 ##@ Maintenance
 clean: ## Stop and remove the Jenkins container and network
 	@echo "🧹 Cleaning up Jenkins container and network"
-	docker rm -f $(DOCKER_CONTAINER) || echo "Container $(DOCKER_CONTAINER) does not exist"
-	docker network rm $(DOCKER_NETWORK) || echo "Network $(DOCKER_NETWORK) does not exist"
+	@docker rm -f $(DOCKER_CONTAINER) || echo "Container $(DOCKER_CONTAINER) does not exist"
+	@docker network rm $(DOCKER_NETWORK) || echo "Network $(DOCKER_NETWORK) does not exist"
 
 ##@ Documentation
 help: ## Display this help
