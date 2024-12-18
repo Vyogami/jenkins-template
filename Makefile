@@ -1,8 +1,8 @@
 # Configuration
 DOCKER_IMAGE := jenkins
-DOCKER_CONTAINER := jenkins-blueocean
+DOCKER_CONTAINER := jenkins
 DOCKER_NETWORK := jenkins
-DOCKER_TAG := myjenkins-blueocean:2.414.2
+DOCKER_TAG := jenkins
 DOCKER_BUILD_FLAGS := -t $(DOCKER_IMAGE)
 DOCKER_RUN_FLAGS := --name $(DOCKER_CONTAINER) --restart=on-failure --detach \
   --network $(DOCKER_NETWORK) --env DOCKER_HOST=tcp://docker:2376 \
@@ -33,6 +33,10 @@ run: ## Run the Jenkins BlueOcean container
 get-password: ## Get the Jenkins initial admin password
 	@echo "🔑 Retrieving Jenkins initial admin password"
 	docker exec $(DOCKER_CONTAINER) cat /var/jenkins_home/secrets/initialAdminPassword
+
+exec: ## Get into the container
+	@echo "Entering the jenkins container"
+	docker exec -it $(DOCKER_CONTAINER) sh
 
 start: build network run ## Build, create network, and run Jenkins in one go
 	@echo "🎉 Jenkins is up and running"
