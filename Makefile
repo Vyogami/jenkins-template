@@ -44,12 +44,17 @@ workspace: ## Get into the container and cd into the workspace dir
 
 start: build network run ## Build, create network, and run Jenkins in one go
 	@echo "🎉 Jenkins is up and running"
+	
+start-alpine-node: ## Starts the apline contiainer node for jenkins
+	@echo "Starting alpine container node for jeknins"
+	@docker run -d --restart=always -p 127.0.0.1:2376:2375 --network jenkins -v /var/run/docker.sock:/var/run/docker.sock alpine/socat tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
 
 ##@ Maintenance
-clean: ## Stop and remove the Jenkins container and network
-	@echo "🧹 Cleaning up Jenkins container and network"
+clean: ## Stop and remove the Jenkins container, network, and volumes
+	@echo "🧹 Cleaning up Jenkins container, network, and volumes"
 	@docker rm -f $(DOCKER_CONTAINER) || echo "Container $(DOCKER_CONTAINER) does not exist"
 	@docker network rm $(DOCKER_NETWORK) || echo "Network $(DOCKER_NETWORK) does not exist"
+	@docker volume rm jenkins-data jenkins-docker-certs || echo "Volumes do not exist"
 
 ##@ Documentation
 help: ## Display this help
