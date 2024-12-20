@@ -57,10 +57,10 @@ get-password: ## Get the Jenkins initial admin password
 	@docker exec $(DOCKER_CONTAINER) cat /var/jenkins_home/secrets/initialAdminPassword
 
 exec: ## Get into the container
-	@docker exec -it $(DOCKER_CONTAINER) sh
+	@docker exec -it $(DOCKER_CONTAINER) bash
 
 workspace: ## Enter the container's workspace directory
-	@docker exec -it $(DOCKER_CONTAINER) sh -c "cd /var/jenkins_home/workspace && sh"
+	@docker exec -it $(DOCKER_CONTAINER) bash -c "cd /var/jenkins_home/workspace && bash"
 
 start-alpine-node: ## Start the alpine container node for jenkins
 	@docker run -d --restart=always -p 127.0.0.1:2376:2375 --network jenkins \
