@@ -10,14 +10,9 @@ DOCKER_RUN_FLAGS := --name $(DOCKER_CONTAINER) \
   --network $(DOCKER_NETWORK) \
   --publish 8080:8080 \
   --publish 50000:50000 \
-  --memory=500m \
-  --memory-swap=500m \
-  --env JAVA_OPTS="-Xmx256m -Xms256m -XX:MaxMetaspaceSize=128m -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError -Djava.awt.headless=true -Xlog:gc*=debug:/var/log/jenkins/gc.log" \
-  --env JENKINS_OPTS="--handlerCountMax=100 --logfile=/var/log/jenkins/jenkins.log" \
   --volume jenkins-data:/var/jenkins_home \
   --volume /var/run/docker.sock:/var/run/docker.sock \
   $(DOCKER_TAG)
-
 .PHONY: all clean purge rebuild restart get-password exec workspace start-alpine-node help
 .DEFAULT_GOAL := help
 MAKEFLAGS += --no-print-directory
