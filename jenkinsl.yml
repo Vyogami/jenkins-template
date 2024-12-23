@@ -1,0 +1,181 @@
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - basicSSHUserPrivateKey:
+          id: "NG-Backend"
+          scope: GLOBAL
+          username: "NG-Backend"
+          privateKeySource:
+            directEntry:
+              privateKey: ${NG_BACKEND_SSH_KEY}
+      - basicSSHUserPrivateKey:
+          id: "NG-Testing"
+          scope: GLOBAL
+          username: "NG-Testing"
+          privateKeySource:
+            directEntry:
+              privateKey: ${NG_TESTING_SSH_KEY}
+      - file:
+          description: "Env file of NG-Backend"
+          fileName: ".env"
+          id: "Env-NG-Backend"
+          scope: GLOBAL
+          secretBytes: ${NG_BACKEND_ENV}
+      - file:
+          description: "Env for NG-Testing"
+          fileName: ".env"
+          id: "Env-NG-Testing"
+          scope: GLOBAL
+          secretBytes: ${NG_TESTING_ENV}
+      - usernamePassword:
+          id: "SMTP_CREDENTIALS"
+          scope: GLOBAL
+          username: ${SMTP_USER}
+          password: ${SMTP_PASSWORD}
+
+jenkins:
+  systemMessage: "Jenkins optimized for low memory usage"
+  numExecutors: ${JENKINS_NUM_EXECUTORS}
+  quietPeriod: ${JENKINS_QUIET_PERIOD}
+  agentProtocols:
+    - "JNLP4-connect"
+    - "Ping"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+  disableRememberMe: false
+  disabledAdministrativeMonitors:
+    - "hudson.util.DoubleLaunchChecker"
+  labelAtoms:
+    - name: "built-in"
+  markupFormatter: "plainText"
+  mode: NORMAL
+  myViewsTabBar: "standard"
+  nodeMonitors:
+    - "architecture"
+    - "clock"
+    - diskSpace:
+        freeSpaceThreshold: "500MB"
+        freeSpaceWarningThreshold: "1GB"
+    - "swapSpace"
+    - tmpSpace:
+        freeSpaceThreshold: "100MB"
+        freeSpaceWarningThreshold: "200MB"
+    - responseTime:
+        healthy: 2000
+        threshold: 5000
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+        - id: "admin"
+          name: "Shivam Shandilya"
+          properties:
+            - "consoleUrlProvider"
+            - "favorite"
+            - "myView"
+            - preferredProvider:
+                providerId: "default"
+            - "timezone"
+            - "experimentalFlags"
+            - mailer:
+                emailAddress: "shivam@embetter.in"
+            - "apiToken"
+            - theme:
+                theme: "dark"
+  slaveAgentPort: 50000
+  updateCenter:
+    sites:
+      - id: "default"
+        url: "https://updates.jenkins.io/update-center.json"
+  views:
+    - all:
+        name: "all"
+  viewsTabBar: "standard"
+
+globalCredentialsConfiguration:
+  configuration:
+    providerFilter: "none"
+    typeFilter: "none"
+
+appearance:
+  pipelineGraphView:
+    showGraphOnBuildPage: false
+    showGraphOnJobPage: false
+  prism:
+    theme: PRISM
+  themeManager:
+    disableUserThemes: true
+    theme: "dark"
+
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+  gitHostKeyVerificationConfiguration:
+    sshHostKeyVerificationStrategy: "acceptFirstConnectionStrategy"
+  sSHD:
+    port: -1
+  scriptApproval:
+    forceSandbox: false
+
+unclassified:
+  bitbucketEndpointConfiguration:
+    endpoints:
+      - bitbucketCloudEndpoint:
+          enableCache: false
+          manageHooks: false
+          repositoriesCacheDuration: 0
+          teamCacheDuration: 0
+  buildDiscarders:
+    configuredBuildDiscarders:
+      - "jobBuildDiscarder"
+    defaultBuildDiscarder:
+      daysToKeepStr: "7"
+      numToKeepStr: "5"
+      artifactDaysToKeepStr: "7"
+      artifactNumToKeepStr: "3"
+  email-ext:
+    adminRequiredForTemplateTesting: false
+    allowUnregisteredEnabled: false
+    charset: "UTF-8"
+    debugMode: false
+    defaultBody: |-
+      $PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
+      Check console output at $BUILD_URL to view the results.
+    defaultContentType: "text/plain"
+    defaultRecipients: ${SMTP_DEFAULT_RECIPIENTS}
+    defaultSubject: "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!"
+    defaultTriggerIds:
+      - "hudson.plugins.emailext.plugins.trigger.FailureTrigger"
+    mailAccount:
+      credentialsId: "SMTP_CREDENTIALS"
+      smtpHost: ${SMTP_HOST}
+      smtpPort: ${SMTP_PORT}
+      useTls: true
+  location:
+    adminAddress: ${JENKINS_ADMIN_EMAIL}
+    url: ${JENKINS_URL}
+  mailer:
+    charset: "UTF-8"
+    smtpHost: ${SMTP_HOST}
+    smtpPort: ${SMTP_PORT}
+    useSsl: false
+    useTls: true
+  pollSCM:
+    pollingThreadCount: 5
+
+tool:
+  git:
+    installations:
+      - home: "git"
+        name: "Default"
+  mavenGlobalConfig:
+    globalSettingsProvider: "standard"
+    settingsProvider: "standard"
