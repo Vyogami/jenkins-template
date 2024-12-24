@@ -1,6 +1,9 @@
 FROM jenkins/jenkins:2.479.2-jdk17
 USER root
 
+# Set environment variable for timezone
+ENV TZ=Asia/Kolkata
+
 # Install necessary packages
 RUN apt-get update && \
     apt-get install -y \
@@ -8,8 +11,12 @@ RUN apt-get update && \
     ca-certificates \
     curl \
     gnupg \
-    make\
-    lsb-release
+    make \
+    lsb-release \
+    tzdata && \
+    # Configure timezone
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone
 
 # Add Docker's official GPG key
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
@@ -30,7 +37,7 @@ RUN groupadd -g 999 docker && \
 
 # Install Blue Ocean and other plugins
 USER jenkins
-RUN jenkins-plugin-cli --plugins "blueocean docker-workflow"
+RUN jenkins-plugin-cli --plugins "blueocean docker-workflow json-path-api"
 
 # Switch back to root for permissions
 USER root
