@@ -4,7 +4,7 @@ DOCKER_CONTAINER := jenkins
 DOCKER_NETWORK := jenkins
 DOCKER_TAG := $(DOCKER_IMAGE):latest
 DOCKER_RUN_FLAGS := --name $(DOCKER_CONTAINER) \
-  --memory 1G \
+  --memory 800M \
   --restart=on-failure \
   --detach \
   --privileged \
