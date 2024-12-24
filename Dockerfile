@@ -4,6 +4,18 @@ USER root
 # Set environment variable for timezone
 ENV TZ=Asia/Kolkata
 
+# Set Java memory limits and GC options for low memory usage
+ENV JAVA_OPTS="-Xmx500m \
+    -Xms256m \
+    -XX:MaxMetaspaceSize=256m \
+    -XX:+UseG1GC \
+    -XX:+ExplicitGCInvokesConcurrent \
+    -XX:G1HeapRegionSize=4m \
+    -XX:InitiatingHeapOccupancyPercent=45 \
+    -XX:+HeapDumpOnOutOfMemoryError \
+    -XX:HeapDumpPath=/var/jenkins_home/heap-dump.hprof \
+    -Dhudson.footerURL=default"
+
 # Install necessary packages
 RUN apt-get update && \
     apt-get install -y \
